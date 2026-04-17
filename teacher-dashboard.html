@@ -7,95 +7,92 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/pages.css" />
   <style>
-    /* ── Role badge ── */
-    .role-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: rgba(79,110,247,0.15);
-      color: #7a9af8;
-      border: 1px solid rgba(79,110,247,0.25);
-      border-radius: 20px;
-      font-size: 0.72rem; font-weight: 600;
-      padding: 0.2rem 0.7rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+    .role-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(79,110,247,.15);color:#7a9af8;border:1px solid rgba(79,110,247,.25);border-radius:20px;font-size:.72rem;font-weight:600;padding:.2rem .7rem;letter-spacing:.04em;text-transform:uppercase}
+    .submission-row{cursor:pointer;transition:background .1s}
+    .submission-row:hover td{background:rgba(255,255,255,.02)}
+    .badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:600}
+    .badge-submitted{background:rgba(34,197,94,.15);color:#4ade80}
+    .badge-pending{background:rgba(234,179,8,.15);color:#facc15}
+    .badge-overdue{background:rgba(239,68,68,.15);color:#f87171}
 
-    /* ── Assigned tasks table ── */
-    .submission-row { cursor: pointer; transition: background 0.1s; }
-    .submission-row:hover td { background: rgba(255,255,255,0.02); }
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100}
+    .overlay.open{display:block}
+    .modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1d27;border:1px solid #2a2d3a;border-radius:16px;padding:1.75rem;width:min(520px,92vw);z-index:101;max-height:90vh;overflow-y:auto}
+    .modal.open{display:block}
+    .modal-title{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:1.25rem}
+    .modal-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem}
 
-    .badge {
-      display: inline-block; padding: 0.2rem 0.6rem;
-      border-radius: 20px; font-size: 0.72rem; font-weight: 600;
-    }
-    .badge-submitted  { background: rgba(34,197,94,0.15);  color: #4ade80; }
-    .badge-pending    { background: rgba(234,179,8,0.15);  color: #facc15; }
-    .badge-overdue    { background: rgba(239,68,68,0.15);  color: #f87171; }
+    .form-group{margin-bottom:1rem}
+    .form-label{display:block;font-size:.8rem;color:#888;margin-bottom:.35rem;text-transform:uppercase;font-weight:600;letter-spacing:.03em}
+    .form-control{width:100%;padding:.65rem .9rem;background:#13151e;border:1px solid #2a2d3a;border-radius:8px;color:#fff;font-size:.9rem;outline:none;transition:border-color .15s}
+    .form-control:focus{border-color:#4f6ef7}
+    .form-control::placeholder{color:#444}
+    textarea.form-control{resize:vertical;min-height:80px}
 
-    /* ── Assign modal ── */
-    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:100; }
-    .overlay.open { display:block; }
-    .modal {
-      display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-      background:#1a1d27; border:1px solid #2a2d3a; border-radius:16px;
-      padding:1.75rem; width:min(500px,92vw); z-index:101; max-height:90vh; overflow-y:auto;
-    }
-    .modal.open { display:block; }
-    .modal-title { font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:1.25rem; }
-    .modal-footer { display:flex; gap:0.75rem; justify-content:flex-end; margin-top:1.5rem; }
+    .btn{padding:.6rem 1.2rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+    .btn-primary{background:#4f6ef7;color:#fff}
+    .btn-primary:hover{background:#3a56e8}
+    .btn-ghost{background:transparent;border:1px solid #2a2d3a;color:#aaa}
+    .btn-ghost:hover{color:#fff;border-color:#555}
+    .btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171}
+    .btn-danger:hover{background:rgba(239,68,68,.25)}
+    .btn-sm{padding:.35rem .75rem;font-size:.78rem}
 
-    .form-group { margin-bottom:1rem; }
-    .form-label { display:block; font-size:0.8rem; color:#888; margin-bottom:0.35rem; text-transform:uppercase; font-weight:600; letter-spacing:.03em; }
-    .form-control { width:100%; padding:.65rem .9rem; background:#13151e; border:1px solid #2a2d3a; border-radius:8px; color:#fff; font-size:.9rem; outline:none; transition:border-color .15s; }
-    .form-control:focus { border-color:#4f6ef7; }
-    .form-control::placeholder { color:#444; }
-    textarea.form-control { resize:vertical; min-height:80px; }
+    /* student checkbox list */
+    .student-checklist{display:flex;flex-direction:column;gap:.4rem;max-height:180px;overflow-y:auto;background:#13151e;border:1px solid #2a2d3a;border-radius:8px;padding:.6rem}
+    .student-check-item{display:flex;align-items:center;gap:.6rem;padding:.3rem .4rem;border-radius:6px;cursor:pointer;transition:background .1s}
+    .student-check-item:hover{background:rgba(255,255,255,.04)}
+    .student-check-item input{accent-color:#4f6ef7;width:15px;height:15px;cursor:pointer}
+    .student-check-item label{font-size:.88rem;color:#ddd;cursor:pointer;flex:1}
+    .check-all-row{display:flex;align-items:center;gap:.6rem;padding:.3rem .4rem;border-bottom:1px solid #2a2d3a;margin-bottom:.3rem}
+    .check-all-row input{accent-color:#4f6ef7;width:15px;height:15px;cursor:pointer}
+    .check-all-row label{font-size:.82rem;color:#888;cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 
-    .btn { padding:.6rem 1.2rem; border-radius:8px; font-size:.88rem; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
-    .btn-primary { background:#4f6ef7; color:#fff; }
-    .btn-primary:hover { background:#3a56e8; }
-    .btn-ghost { background:transparent; border:1px solid #2a2d3a; color:#aaa; }
-    .btn-ghost:hover { color:#fff; border-color:#555; }
-    .btn-sm { padding:.35rem .75rem; font-size:.78rem; }
+    .detail-panel{background:#13151e;border:1px solid #2a2d3a;border-radius:12px;padding:1.25rem;margin-top:1rem;display:none}
+    .detail-panel.open{display:block}
+    .detail-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.75rem}
+    .student-submission{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #1e2130}
+    .student-submission:last-child{border-bottom:none}
+    .student-name{font-size:.88rem;color:#ddd}
+    .student-submitted-at{font-size:.75rem;color:#555}
 
-    /* ── Submission detail panel ── */
-    .detail-panel {
-      background:#13151e; border:1px solid #2a2d3a; border-radius:12px;
-      padding:1.25rem; margin-top:1rem; display:none;
-    }
-    .detail-panel.open { display:block; }
-    .detail-title { font-size:.9rem; font-weight:700; color:#fff; margin-bottom:.75rem; }
-    .student-submission {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:.6rem 0; border-bottom:1px solid #1e2130;
-    }
-    .student-submission:last-child { border-bottom:none; }
-    .student-name { font-size:.88rem; color:#ddd; }
-    .student-submitted-at { font-size:.75rem; color:#555; }
+    .tab-bar{display:flex;gap:0;border-bottom:1px solid #2a2d3a;margin-bottom:1.5rem}
+    .tab{padding:.6rem 1.1rem;font-size:.85rem;font-weight:600;color:#666;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+    .tab.active{color:#4f6ef7;border-bottom-color:#4f6ef7}
 
-    /* ── Progress ring ── */
-    .progress-ring-wrap { display:flex; align-items:center; gap:1rem; }
-    .ring-label { font-size:.78rem; color:#666; }
-    .ring-val { font-size:1.1rem; font-weight:700; color:#fff; }
+    .page-body{padding:1.5rem !important}
+    .topbar-meta{display:flex;align-items:center;gap:.75rem}
+    .signout-btn{background:transparent;border:1px solid #2a2d3a;color:#666;padding:.35rem .8rem;border-radius:6px;font-size:.78rem;cursor:pointer;transition:all .15s}
+    .signout-btn:hover{color:#fff;border-color:#555}
 
-    /* ── Tabs ── */
-    .tab-bar { display:flex; gap:0; border-bottom:1px solid #2a2d3a; margin-bottom:1.5rem; }
-    .tab { padding:.6rem 1.1rem; font-size:.85rem; font-weight:600; color:#666; cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; }
-    .tab.active { color:#4f6ef7; border-bottom-color:#4f6ef7; }
-
-    /* Override page body padding for full use */
-    .page-body { padding: 1.5rem !important; }
-
-    .topbar-meta { display:flex; align-items:center; gap:.75rem; }
-    .signout-btn { background:transparent; border:1px solid #2a2d3a; color:#666; padding:.35rem .8rem; border-radius:6px; font-size:.78rem; cursor:pointer; transition:all .15s; }
-    .signout-btn:hover { color:#fff; border-color:#555; }
+    /* Settings */
+    .settings-layout{display:grid;grid-template-columns:180px 1fr;gap:1.5rem}
+    @media(max-width:600px){.settings-layout{grid-template-columns:1fr}}
+    .settings-nav{display:flex;flex-direction:column;gap:.3rem}
+    .settings-nav-item{padding:.6rem .9rem;border-radius:8px;cursor:pointer;font-size:.85rem;color:#888;transition:all .15s;font-weight:500}
+    .settings-nav-item:hover{background:rgba(255,255,255,.04);color:#ddd}
+    .settings-nav-item.active{background:rgba(79,110,247,.12);color:#7a9af8}
+    .settings-card{background:#13151e;border:1px solid #2a2d3a;border-radius:12px;overflow:hidden;margin-bottom:1rem}
+    .settings-card-header{padding:.9rem 1.1rem;border-bottom:1px solid #2a2d3a}
+    .settings-card-title{font-size:.9rem;font-weight:700;color:#fff}
+    .settings-card-body{padding:1rem 1.1rem;display:flex;flex-direction:column;gap:1rem}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid #1e2130}
+    .settings-row:last-child{border-bottom:none}
+    .settings-row-label{font-size:.88rem;color:#ddd;font-weight:500}
+    .settings-row-sub{font-size:.75rem;color:#666;margin-top:.15rem}
+    .danger-zone .settings-card-header{background:rgba(239,68,68,.05)}
+    .toggle{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;inset:0;background:#2a2d3a;border-radius:24px;transition:.3s;cursor:pointer}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#666;border-radius:50%;transition:.3s}
+    .toggle input:checked+.toggle-slider{background:#4f6ef7}
+    .toggle input:checked+.toggle-slider::before{transform:translateX(20px);background:#fff}
   </style>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 <div class="shell">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">⚡</div>
@@ -106,18 +103,20 @@
       <a href="teacher-dashboard.html" class="nav-item active">
         <span class="nav-icon">🏠</span> Dashboard
       </a>
-      <a href="#" class="nav-item" onclick="showTab('assigned'); return false;">
+      <a href="#" class="nav-item" onclick="showTab('assigned');return false;">
         <span class="nav-icon">📋</span> Assigned Tasks
         <span class="nav-badge" id="sidebar-task-count">0</span>
       </a>
-      <a href="#" class="nav-item" onclick="showTab('submissions'); return false;">
+      <a href="#" class="nav-item" onclick="showTab('submissions');return false;">
         <span class="nav-icon">📬</span> Submissions
       </a>
-
+      <a href="#" class="nav-item" onclick="showTab('settings');return false;">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
     </div>
     <div class="sidebar-footer">
       <div class="user-card">
-        <div class="avatar">MT</div>
+        <div class="avatar" id="sidebar-avatar">MT</div>
         <div class="user-info">
           <div class="user-name" id="sidebar-name">Ms. Taylor</div>
           <div class="user-role">Teacher</div>
@@ -126,7 +125,6 @@
     </div>
   </aside>
 
-  <!-- CONTENT -->
   <div class="content">
     <header class="topbar">
       <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
@@ -160,60 +158,41 @@
         <div class="stat-card">
           <div class="stat-label">Submission Rate</div>
           <div class="stat-value" id="stat-rate">0%</div>
-          <div class="progress-wrap">
-            <div class="progress-fill" id="stat-bar"></div>
-          </div>
+          <div class="progress-wrap"><div class="progress-fill" id="stat-bar"></div></div>
         </div>
       </div>
 
       <!-- Tabs -->
       <div class="tab-bar">
-        <div class="tab active" id="tab-assigned" onclick="showTab('assigned')">Assigned Tasks</div>
-        <div class="tab" id="tab-submissions" onclick="showTab('submissions')">Submissions</div>
+        <div class="tab active" id="tab-assigned"    onclick="showTab('assigned')">Assigned Tasks</div>
+        <div class="tab"        id="tab-submissions" onclick="showTab('submissions')">Submissions</div>
+        <div class="tab"        id="tab-settings"    onclick="showTab('settings')">⚙️ Settings</div>
       </div>
 
-      <!-- Assigned Tasks Panel -->
+      <!-- ASSIGNED panel -->
       <div id="panel-assigned">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="margin-bottom:1rem;">
           <input type="text" id="teacher-search" class="search-box" placeholder="Search tasks…" oninput="renderAssigned()" style="max-width:280px;" />
         </div>
-        <div class="card" style="padding:0; overflow:hidden;">
+        <div class="card" style="padding:0;overflow:hidden;">
           <table class="table" style="margin:0;">
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Assigned To</th>
-                <th>Priority</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>Task</th><th>Assigned To</th><th>Priority</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
             <tbody id="assigned-table-body">
-              <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No tasks assigned yet. Click "+ Assign Task" to get started.</td></tr>
+              <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No tasks yet. Click "+ Assign Task" to get started.</td></tr>
             </tbody>
           </table>
         </div>
-        <!-- Submission detail accordion -->
         <div class="detail-panel" id="detail-panel">
           <div class="detail-title" id="detail-title">Submissions for: —</div>
           <div id="detail-body"></div>
         </div>
       </div>
 
-      <!-- Submissions Panel -->
+      <!-- SUBMISSIONS panel -->
       <div id="panel-submissions" style="display:none;">
-        <div class="card" style="padding:0; overflow:hidden;">
+        <div class="card" style="padding:0;overflow:hidden;">
           <table class="table" style="margin:0;">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Task</th>
-                <th>Priority</th>
-                <th>Submitted At</th>
-                <th>Note</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Student</th><th>Task</th><th>Priority</th><th>Submitted At</th><th>Note</th></tr></thead>
             <tbody id="submissions-table-body">
               <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">No submissions yet.</td></tr>
             </tbody>
@@ -221,15 +200,77 @@
         </div>
       </div>
 
+      <!-- SETTINGS panel -->
+      <div id="panel-settings" style="display:none;">
+        <div class="settings-layout">
+          <nav class="settings-nav">
+            <div class="settings-nav-item active" onclick="showSettingsTab('profile')">👤 Profile</div>
+            <div class="settings-nav-item" onclick="showSettingsTab('notifications')">🔔 Notifications</div>
+            <div class="settings-nav-item" onclick="showSettingsTab('appearance')">🎨 Appearance</div>
+            <div class="settings-nav-item" onclick="showSettingsTab('data')">🗄️ Data</div>
+          </nav>
+          <div>
+            <!-- Profile -->
+            <div class="settings-panel" id="sp-profile">
+              <div class="settings-card">
+                <div class="settings-card-header"><div class="settings-card-title">Profile Information</div></div>
+                <div class="settings-card-body">
+                  <div class="form-group" style="margin:0;"><label class="form-label">Display Name</label><input type="text" class="form-control" id="s-name" /></div>
+                  <div class="form-group" style="margin:0;"><label class="form-label">Email</label><input type="email" class="form-control" id="s-email" /></div>
+                  <div class="form-group" style="margin:0;"><label class="form-label">New Password <span style="color:#555;font-weight:400;text-transform:none;">(leave blank to keep current)</span></label><input type="password" class="form-control" id="s-pass" placeholder="New password" /></div>
+                  <div><button class="btn btn-primary" onclick="saveProfile()">Save Changes</button></div>
+                </div>
+              </div>
+            </div>
+            <!-- Notifications -->
+            <div class="settings-panel" id="sp-notifications" style="display:none;">
+              <div class="settings-card">
+                <div class="settings-card-header"><div class="settings-card-title">Notification Preferences</div></div>
+                <div class="settings-card-body">
+                  <div class="settings-row"><div><div class="settings-row-label">Task Due Reminders</div><div class="settings-row-sub">Get notified when a task is due soon</div></div><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="settings-row"><div><div class="settings-row-label">Overdue Alerts</div><div class="settings-row-sub">Alert when tasks pass their due date</div></div><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="settings-row"><div><div class="settings-row-label">Weekly Summary</div><div class="settings-row-sub">Receive a weekly digest of activity</div></div><label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label></div>
+                </div>
+              </div>
+            </div>
+            <!-- Appearance -->
+            <div class="settings-panel" id="sp-appearance" style="display:none;">
+              <div class="settings-card">
+                <div class="settings-card-header"><div class="settings-card-title">Appearance</div></div>
+                <div class="settings-card-body">
+                  <div class="settings-row"><div><div class="settings-row-label">Compact Mode</div><div class="settings-row-sub">Reduce padding for a denser layout</div></div><label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label></div>
+                  <div class="settings-row"><div><div class="settings-row-label">Show Sidebar Labels</div><div class="settings-row-sub">Always show text labels next to icons</div></div><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                </div>
+              </div>
+            </div>
+            <!-- Data -->
+            <div class="settings-panel" id="sp-data" style="display:none;">
+              <div class="settings-card">
+                <div class="settings-card-header"><div class="settings-card-title">Data Management</div></div>
+                <div class="settings-card-body">
+                  <div class="settings-row"><div><div class="settings-row-label">Total tasks assigned</div><div class="settings-row-sub" id="s-task-count">—</div></div></div>
+                  <div class="settings-row"><div><div class="settings-row-label">Registered students</div><div class="settings-row-sub" id="s-student-count">—</div></div></div>
+                </div>
+              </div>
+              <div class="settings-card danger-zone">
+                <div class="settings-card-header"><div class="settings-card-title" style="color:#f87171;">⚠️ Danger Zone</div></div>
+                <div class="settings-card-body">
+                  <div class="settings-row"><div><div class="settings-row-label">Delete all assigned tasks</div><div class="settings-row-sub">Permanently removes all tasks and submissions.</div></div><button class="btn btn-danger" onclick="clearAllData()">Delete All</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
 
-<!-- Assign Modal -->
+<!-- Assign modal -->
 <div class="overlay" id="assign-overlay" onclick="closeAssignModal()"></div>
 <div class="modal" id="assign-modal">
   <div class="modal-title">Assign New Task</div>
-
   <div class="form-group">
     <label class="form-label">Task Title <span style="color:#f87171">*</span></label>
     <input type="text" id="at-title" class="form-control" placeholder="e.g. Chapter 5 Reading" />
@@ -239,15 +280,14 @@
     <textarea id="at-desc" class="form-control" placeholder="Instructions or details…"></textarea>
   </div>
   <div class="form-group">
-    <label class="form-label">Assign To <span style="color:#f87171">*</span></label>
-    <select id="at-student" class="form-control">
-      <option value="">— Select student —</option>
-      <option value="Alex Johnson">Alex Johnson</option>
-      <option value="Priya Sharma">Priya Sharma</option>
-      <option value="Marcus Lee">Marcus Lee</option>
-      <option value="Sara O'Brien">Sara O'Brien</option>
-      <option value="All Students">📢 All Students</option>
-    </select>
+    <label class="form-label">Assign To <span style="color:#f87171">*</span> <span style="color:#555;font-weight:400;text-transform:none;font-size:.78rem;">(select one or more)</span></label>
+    <div class="student-checklist" id="student-checklist">
+      <div class="check-all-row">
+        <input type="checkbox" id="check-all" onchange="toggleAllStudents(this.checked)" />
+        <label for="check-all">All Students</label>
+      </div>
+      <!-- Populated by JS -->
+    </div>
   </div>
   <div class="form-group">
     <label class="form-label">Priority <span style="color:#f87171">*</span></label>
@@ -262,9 +302,7 @@
     <label class="form-label">Due Date</label>
     <input type="date" id="at-date" class="form-control" />
   </div>
-
-  <div id="assign-error" style="color:#f87171;font-size:.82rem;display:none;margin-top:-.5rem;margin-bottom:.75rem;"></div>
-
+  <div id="assign-error" style="color:#f87171;font-size:.82rem;display:none;margin-bottom:.5rem;"></div>
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeAssignModal()">Cancel</button>
     <button class="btn btn-primary" onclick="saveAssignment()">Assign Task</button>
@@ -275,230 +313,269 @@
 
 <script>
   // ── Auth guard ──
-  const user = JSON.parse(localStorage.getItem('tf_user') || 'null');
+  const user = JSON.parse(localStorage.getItem('tf_user')||'null');
   if (!user || user.role !== 'teacher') window.location.href = 'login.html';
 
-  function signOut() {
-    localStorage.removeItem('tf_user');
-    window.location.href = 'login.html';
+  function signOut() { localStorage.removeItem('tf_user'); window.location.href='login.html'; }
+
+  // ── Populate user info ──
+  function getAccounts() { return JSON.parse(localStorage.getItem('tf_accounts')||'[]'); }
+  function saveAccounts(a){ localStorage.setItem('tf_accounts',JSON.stringify(a)); }
+
+  function getStudents() {
+    return getAccounts().filter(a => a.role==='student');
   }
+
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('sidebar-avatar').textContent = user.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
 
   // ── Data helpers ──
-  function getAssignments() {
-    return JSON.parse(localStorage.getItem('tf_assignments') || '[]');
-  }
-  function saveAssignments(arr) {
-    localStorage.setItem('tf_assignments', JSON.stringify(arr));
-  }
-  function getSubmissions() {
-    return JSON.parse(localStorage.getItem('tf_submissions') || '[]');
-  }
+  function getAssignments(){ return JSON.parse(localStorage.getItem('tf_assignments')||'[]'); }
+  function saveAssignments(a){ localStorage.setItem('tf_assignments',JSON.stringify(a)); }
+  function getSubmissions(){ return JSON.parse(localStorage.getItem('tf_submissions')||'[]'); }
 
-  // ── Sidebar mobile toggle ──
-  document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  // ── Mobile sidebar ──
+  document.getElementById('sidebar-toggle').addEventListener('click',()=>{
     document.querySelector('.sidebar').classList.toggle('open');
     document.getElementById('sidebar-overlay').classList.toggle('open');
   });
-  document.getElementById('sidebar-overlay').addEventListener('click', () => {
+  document.getElementById('sidebar-overlay').addEventListener('click',()=>{
     document.querySelector('.sidebar').classList.remove('open');
     document.getElementById('sidebar-overlay').classList.remove('open');
   });
 
   // ── Tabs ──
+  const TABS = ['assigned','submissions','settings'];
   function showTab(tab) {
-    document.getElementById('panel-assigned').style.display = tab === 'assigned' ? '' : 'none';
-    document.getElementById('panel-submissions').style.display = tab === 'submissions' ? '' : 'none';
-    document.getElementById('tab-assigned').className = 'tab' + (tab === 'assigned' ? ' active' : '');
-    document.getElementById('tab-submissions').className = 'tab' + (tab === 'submissions' ? ' active' : '');
-    if (tab === 'submissions') renderSubmissions();
+    TABS.forEach(t => {
+      document.getElementById('panel-'+t).style.display = t===tab ? '' : 'none';
+      document.getElementById('tab-'+t).className = 'tab'+(t===tab?' active':'');
+    });
+    if (tab==='submissions') renderSubmissions();
+    if (tab==='settings')    initSettings();
   }
 
-  // ── Modal ──
+  // ── Student checklist in modal ──
+  function buildStudentChecklist() {
+    const students = getStudents();
+    const list = document.getElementById('student-checklist');
+    // Remove old student items (keep check-all row)
+    list.querySelectorAll('.student-check-item').forEach(el=>el.remove());
+    students.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'student-check-item';
+      div.innerHTML = `<input type="checkbox" id="sc-${s.email}" value="${s.name}" />
+        <label for="sc-${s.email}">${s.name} <span style="color:#555;font-size:.75rem;">(${s.email})</span></label>`;
+      list.appendChild(div);
+    });
+    document.getElementById('check-all').checked = false;
+  }
+
+  function toggleAllStudents(checked) {
+    document.querySelectorAll('#student-checklist .student-check-item input').forEach(cb => cb.checked = checked);
+  }
+
+  function getSelectedStudents() {
+    return [...document.querySelectorAll('#student-checklist .student-check-item input:checked')].map(cb=>cb.value);
+  }
+
+  // ── Assign modal ──
   function openAssignModal() {
+    buildStudentChecklist();
     document.getElementById('assign-overlay').classList.add('open');
     document.getElementById('assign-modal').classList.add('open');
   }
   function closeAssignModal() {
     document.getElementById('assign-overlay').classList.remove('open');
     document.getElementById('assign-modal').classList.remove('open');
-    ['at-title','at-desc','at-student','at-priority','at-date'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    document.getElementById('assign-error').style.display = 'none';
+    ['at-title','at-desc','at-priority','at-date'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('assign-error').style.display='none';
+    document.getElementById('check-all').checked=false;
+    document.querySelectorAll('#student-checklist .student-check-item input').forEach(cb=>cb.checked=false);
   }
 
   function saveAssignment() {
     const title    = document.getElementById('at-title').value.trim();
-    const student  = document.getElementById('at-student').value;
     const priority = document.getElementById('at-priority').value;
+    const selected = getSelectedStudents();
     const errEl    = document.getElementById('assign-error');
 
-    if (!title || !student || !priority) {
-      errEl.textContent = 'Please fill in Title, Student, and Priority.';
-      errEl.style.display = 'block';
-      return;
-    }
-    errEl.style.display = 'none';
+    if (!title)            { errEl.textContent='Please enter a task title.'; errEl.style.display='block'; return; }
+    if (!priority)         { errEl.textContent='Please select a priority.'; errEl.style.display='block'; return; }
+    if (!selected.length)  { errEl.textContent='Please select at least one student.'; errEl.style.display='block'; return; }
+    errEl.style.display='none';
 
     const assignments = getAssignments();
-    const students = student === 'All Students'
-      ? ['Alex Johnson','Priya Sharma','Marcus Lee',"Sara O'Brien"]
-      : [student];
-
-    students.forEach(s => {
+    selected.forEach(studentName => {
       assignments.push({
-        id: Date.now() + Math.random(),
+        id: Date.now()+Math.random(),
         title,
         desc: document.getElementById('at-desc').value.trim(),
-        student: s,
+        student: studentName,
         priority,
         dueDate: document.getElementById('at-date').value,
         createdAt: new Date().toISOString(),
-        submittedBy: []
       });
     });
-
     saveAssignments(assignments);
     closeAssignModal();
     renderAll();
-    showToast('Task assigned!');
+    showToast(`Task assigned to ${selected.length} student${selected.length>1?'s':''}!`);
   }
 
   // ── Delete ──
   function deleteAssignment(id) {
     if (!confirm('Delete this assignment?')) return;
-    saveAssignments(getAssignments().filter(a => a.id != id));
+    saveAssignments(getAssignments().filter(a=>a.id!=id));
     document.getElementById('detail-panel').classList.remove('open');
     renderAll();
   }
 
   // ── Render assigned ──
   let activeDetailId = null;
-
   function renderAssigned() {
-    const query = (document.getElementById('teacher-search').value || '').toLowerCase();
-    const assignments = getAssignments().filter(a =>
-      !query || a.title.toLowerCase().includes(query) || a.student.toLowerCase().includes(query)
-    );
+    const query = (document.getElementById('teacher-search').value||'').toLowerCase();
+    const assignments = getAssignments().filter(a=>!query||a.title.toLowerCase().includes(query)||a.student.toLowerCase().includes(query));
     const submissions = getSubmissions();
     const tbody = document.getElementById('assigned-table-body');
-
     if (!assignments.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No tasks assigned yet.</td></tr>`;
+      tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No tasks assigned yet.</td></tr>`;
       document.getElementById('detail-panel').classList.remove('open');
       return;
     }
-
-    tbody.innerHTML = assignments.map(a => {
-      const subs = submissions.filter(s => s.taskId == a.id);
-      const isSubmitted = subs.length > 0;
+    tbody.innerHTML = assignments.map(a=>{
+      const subs = submissions.filter(s=>s.taskId==a.id);
+      const isSubmitted = subs.length>0;
       const today = new Date().toISOString().split('T')[0];
-      const overdue = a.dueDate && a.dueDate < today && !isSubmitted;
-      const badgeClass = isSubmitted ? 'badge-submitted' : overdue ? 'badge-overdue' : 'badge-pending';
-      const badgeText  = isSubmitted ? 'Submitted' : overdue ? 'Overdue' : 'Pending';
-      const dueFmt = a.dueDate ? new Date(a.dueDate + 'T00:00:00').toLocaleDateString('en-AU', { day:'numeric', month:'short' }) : '—';
-      const priorityDot = { high:'🔴', medium:'🟡', low:'🟢' }[a.priority] || '';
-
+      const overdue = a.dueDate && a.dueDate<today && !isSubmitted;
+      const bc = isSubmitted?'badge-submitted':overdue?'badge-overdue':'badge-pending';
+      const bt = isSubmitted?'Submitted':overdue?'Overdue':'Pending';
+      const due = a.dueDate ? new Date(a.dueDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : '—';
+      const dot = {high:'🔴',medium:'🟡',low:'🟢'}[a.priority]||'';
       return `<tr class="submission-row" onclick="toggleDetail('${a.id}')">
         <td style="font-weight:600;color:var(--text)">${a.title}</td>
         <td style="color:var(--text-muted)">${a.student}</td>
-        <td>${priorityDot} ${a.priority}</td>
-        <td>${dueFmt}</td>
-        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+        <td>${dot} ${a.priority}</td>
+        <td>${due}</td>
+        <td><span class="badge ${bc}">${bt}</span></td>
         <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();deleteAssignment('${a.id}')">🗑</button></td>
       </tr>`;
     }).join('');
-
     document.getElementById('sidebar-task-count').textContent = assignments.length;
   }
 
   function toggleDetail(id) {
-    const submissions = getSubmissions().filter(s => s.taskId == id);
-    const assignment = getAssignments().find(a => a.id == id);
+    const submissions = getSubmissions().filter(s=>s.taskId==id);
+    const assignment  = getAssignments().find(a=>a.id==id);
     const panel = document.getElementById('detail-panel');
-
-    if (activeDetailId === id) {
-      panel.classList.remove('open');
-      activeDetailId = null;
-      return;
-    }
+    if (activeDetailId===id) { panel.classList.remove('open'); activeDetailId=null; return; }
     activeDetailId = id;
-
-    document.getElementById('detail-title').textContent = `Submissions for: ${assignment?.title || ''}`;
-
-    if (!submissions.length) {
-      document.getElementById('detail-body').innerHTML = `<p style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0;">No submissions yet for this task.</p>`;
-    } else {
-      document.getElementById('detail-body').innerHTML = submissions.map(s => `
-        <div class="student-submission">
+    document.getElementById('detail-title').textContent = `Submissions for: ${assignment?.title||''}`;
+    document.getElementById('detail-body').innerHTML = !submissions.length
+      ? `<p style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0;">No submissions yet for this task.</p>`
+      : submissions.map(s=>`<div class="student-submission">
           <div>
             <div class="student-name">${s.studentName}</div>
-            ${s.note ? `<div class="student-submitted-at" style="color:#888;margin-top:.2rem;">"${s.note}"</div>` : ''}
+            ${s.note?`<div class="student-submitted-at" style="color:#888;margin-top:.2rem;">"${s.note}"</div>`:''}
           </div>
           <div style="text-align:right;">
             <span class="badge badge-submitted">Submitted</span>
-            <div class="student-submitted-at" style="margin-top:.25rem;">${new Date(s.submittedAt).toLocaleString('en-AU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</div>
+            <div class="student-submitted-at" style="margin-top:.25rem;">${new Date(s.submittedAt).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
           </div>
-        </div>
-      `).join('');
-    }
+        </div>`).join('');
     panel.classList.add('open');
   }
 
-  // ── Render submissions ──
   function renderSubmissions() {
     const submissions = getSubmissions();
     const assignments = getAssignments();
     const tbody = document.getElementById('submissions-table-body');
-
-    if (!submissions.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">No submissions yet.</td></tr>`;
-      return;
-    }
-
-    const sorted = [...submissions].sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-    tbody.innerHTML = sorted.map(s => {
-      const task = assignments.find(a => a.id == s.taskId);
-      const priorityDot = { high:'🔴', medium:'🟡', low:'🟢' }[task?.priority] || '';
-      const time = new Date(s.submittedAt).toLocaleString('en-AU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
-      return `<tr>
-        <td style="font-weight:600;">${s.studentName}</td>
-        <td>${task?.title || '—'}</td>
-        <td>${priorityDot} ${task?.priority || '—'}</td>
-        <td>${time}</td>
-        <td style="color:var(--text-muted);font-size:.85rem;">${s.note || '—'}</td>
-      </tr>`;
+    if (!submissions.length) { tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">No submissions yet.</td></tr>`; return; }
+    const sorted = [...submissions].sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+    tbody.innerHTML = sorted.map(s=>{
+      const task = assignments.find(a=>a.id==s.taskId);
+      const dot  = {high:'🔴',medium:'🟡',low:'🟢'}[task?.priority]||'';
+      const time = new Date(s.submittedAt).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      return `<tr><td style="font-weight:600;">${s.studentName}</td><td>${task?.title||'—'}</td><td>${dot} ${task?.priority||'—'}</td><td>${time}</td><td style="color:var(--text-muted);font-size:.85rem;">${s.note||'—'}</td></tr>`;
     }).join('');
   }
 
-  // ── Stats ──
   function renderStats() {
-    const assignments = getAssignments();
-    const submissions = getSubmissions();
-    const total = assignments.length;
-    const submitted = submissions.length;
-    const pending = Math.max(0, total - submitted);
-    const rate = total ? Math.round((submitted / total) * 100) : 0;
+    const a=getAssignments(), s=getSubmissions();
+    const total=a.length, submitted=s.length, pending=Math.max(0,total-submitted);
+    const rate=total?Math.round((submitted/total)*100):0;
+    document.getElementById('stat-total').textContent=total;
+    document.getElementById('stat-submitted').textContent=submitted;
+    document.getElementById('stat-pending').textContent=pending;
+    document.getElementById('stat-rate').textContent=rate+'%';
+    document.getElementById('stat-bar').style.width=rate+'%';
+  }
+  function renderAll(){ renderStats(); renderAssigned(); }
 
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-submitted').textContent = submitted;
-    document.getElementById('stat-pending').textContent = pending;
-    document.getElementById('stat-rate').textContent = rate + '%';
-    document.getElementById('stat-bar').style.width = rate + '%';
+  // ── Settings ──
+  let settingsTab = 'profile';
+  function showSettingsTab(t) {
+    settingsTab = t;
+    document.querySelectorAll('.settings-nav-item').forEach((el,i)=>{
+      const tabs=['profile','notifications','appearance','data'];
+      el.classList.toggle('active', tabs[i]===t);
+    });
+    document.querySelectorAll('.settings-panel').forEach(el=>el.style.display='none');
+    document.getElementById('sp-'+t).style.display='';
+    if (t==='data') {
+      document.getElementById('s-task-count').textContent = getAssignments().length+' tasks in storage';
+      document.getElementById('s-student-count').textContent = getStudents().length+' registered students';
+    }
   }
 
-  function renderAll() {
-    renderStats();
-    renderAssigned();
+  function initSettings() {
+    const accounts = getAccounts();
+    const me = accounts.find(a=>a.email===user.email) || user;
+    document.getElementById('s-name').value  = me.name  || '';
+    document.getElementById('s-email').value = me.email || '';
+    document.getElementById('s-pass').value  = '';
+    showSettingsTab('profile');
+  }
+
+  function saveProfile() {
+    const name  = document.getElementById('s-name').value.trim();
+    const email = document.getElementById('s-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('s-pass').value;
+    if (!name)  { showToast('Name cannot be empty.'); return; }
+    if (!email) { showToast('Email cannot be empty.'); return; }
+
+    const accounts = getAccounts();
+    const idx = accounts.findIndex(a=>a.email===user.email);
+    if (idx===-1) { showToast('Account not found.'); return; }
+    accounts[idx].name  = name;
+    accounts[idx].email = email;
+    if (pass.length>=6) accounts[idx].password = pass;
+    else if (pass.length>0 && pass.length<6) { showToast('Password must be at least 6 characters.'); return; }
+    saveAccounts(accounts);
+
+    user.name  = name;
+    user.email = email;
+    localStorage.setItem('tf_user', JSON.stringify(user));
+    document.getElementById('sidebar-name').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    showToast('Profile saved!');
+  }
+
+  function clearAllData() {
+    if (!confirm('Delete ALL assignments and submissions? This cannot be undone.')) return;
+    localStorage.removeItem('tf_assignments');
+    localStorage.removeItem('tf_submissions');
+    renderAll();
+    showToast('All data cleared.');
   }
 
   // ── Toast ──
   function showToast(msg) {
-    const t = document.createElement('div');
-    t.className = 'toast show';
-    t.textContent = msg;
+    const t=document.createElement('div');
+    t.className='toast show';
+    t.textContent=msg;
     document.querySelector('.toast-container').appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+    setTimeout(()=>t.remove(),3000);
   }
 
   renderAll();
