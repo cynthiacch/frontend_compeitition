@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow – Sign In</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f1117;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 1rem;
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .login-logo .logo-icon {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .login-logo .logo-text {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+    .login-logo .logo-sub {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    .login-card {
+      background: #1a1d27;
+      border: 1px solid #2a2d3a;
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .role-select {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .role-btn {
+      border: 2px solid #2a2d3a;
+      background: #13151e;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s ease;
+      color: #aaa;
+    }
+    .role-btn:hover {
+      border-color: #4f6ef7;
+      color: #fff;
+    }
+    .role-btn.active {
+      border-color: #4f6ef7;
+      background: rgba(79,110,247,0.12);
+      color: #fff;
+    }
+    .role-btn .role-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .role-btn .role-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .role-btn .role-desc {
+      font-size: 0.72rem;
+      margin-top: 0.2rem;
+      opacity: 0.7;
+    }
+
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      color: #888;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: #13151e;
+      border: 1px solid #2a2d3a;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-control:focus {
+      border-color: #4f6ef7;
+    }
+    .form-control::placeholder { color: #444; }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.85rem;
+      background: #4f6ef7;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn-login:hover { background: #3a56e8; }
+    .btn-login:active { transform: scale(0.98); }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: #444;
+    }
+
+    .error-msg {
+      background: rgba(220,60,60,0.12);
+      border: 1px solid rgba(220,60,60,0.3);
+      color: #f87171;
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .demo-hint {
+      background: rgba(79,110,247,0.08);
+      border: 1px solid rgba(79,110,247,0.2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      color: #7a9af8;
+      line-height: 1.5;
+    }
+    .demo-hint strong { color: #a0b8ff; }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-logo">
+    <span class="logo-icon">⚡</span>
+    <div class="logo-text">TaskFlow</div>
+    <div class="logo-sub">Classroom Edition</div>
+  </div>
+
+  <div class="login-card">
+
+    <div class="demo-hint">
+      <strong>Demo accounts:</strong><br>
+      Teacher → teacher@school.com / password<br>
+      Student → student@school.com / password
+    </div>
+
+    <div class="role-select">
+      <button class="role-btn active" data-role="teacher" onclick="selectRole('teacher')">
+        <span class="role-icon">👩‍🏫</span>
+        <div class="role-label">Teacher</div>
+        <div class="role-desc">Assign & track tasks</div>
+      </button>
+      <button class="role-btn" data-role="student" onclick="selectRole('student')">
+        <span class="role-icon">🎓</span>
+        <div class="role-label">Student</div>
+        <div class="role-desc">View & submit work</div>
+      </button>
+    </div>
+
+    <div class="error-msg" id="error-msg">Invalid email or password. Please try again.</div>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" id="f-email" placeholder="you@school.com" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" id="f-password" placeholder="••••••••" />
+    </div>
+
+    <button class="btn-login" onclick="handleLogin()">Sign In →</button>
+
+    <div class="login-footer">
+      By signing in you agree to the school's terms of use.
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedRole = 'teacher';
+
+  function selectRole(role) {
+    selectedRole = role;
+    document.querySelectorAll('.role-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.role === role);
+    });
+  }
+
+  function handleLogin() {
+    const email = document.getElementById('f-email').value.trim();
+    const password = document.getElementById('f-password').value;
+    const err = document.getElementById('error-msg');
+
+    const accounts = {
+      teacher: { email: 'teacher@school.com', password: 'password', dest: 'teacher-dashboard.html' },
+      student: { email: 'student@school.com', password: 'password', dest: 'student-dashboard.html' }
+    };
+
+    const acc = accounts[selectedRole];
+    if (email === acc.email && password === acc.password) {
+      err.classList.remove('show');
+      localStorage.setItem('tf_user', JSON.stringify({
+        role: selectedRole,
+        name: selectedRole === 'teacher' ? 'Ms. Taylor' : 'Alex Johnson',
+        email
+      }));
+      window.location.href = acc.dest;
+    } else {
+      err.classList.add('show');
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  // Auto-redirect if already logged in
+  const user = JSON.parse(localStorage.getItem('tf_user') || 'null');
+  if (user) {
+    window.location.href = user.role === 'teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
+  }
+</script>
+</body>
+</html>
